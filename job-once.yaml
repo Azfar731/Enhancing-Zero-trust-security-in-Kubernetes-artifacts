@@ -1,0 +1,16 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: deny-automation-once
+  namespace: otterize-automation
+spec:
+  template:
+    spec:
+      serviceAccountName: deny-automation-controller
+      restartPolicy: Never
+      containers:
+        - name: controller
+          image: deny-auto:local
+          env:
+            - name: NAMESPACE_TO_WATCH
+              value: "otterize-auto"

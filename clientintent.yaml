@@ -1,0 +1,17 @@
+# Declares an Otterize ClientIntent resource that triggers the custom controller to deny a specific application port.
+
+apiVersion: k8s.otterize.com/v2beta1
+kind: ClientIntents
+metadata:
+  name: deny-server-http-port
+  namespace: otterize-auto
+  annotations:
+    otterize-automation/deny-port: "80"
+    test-trigger: "1"
+spec:
+  workload:
+    name: server
+    kind: Deployment
+  targets:
+    - service:
+        name: client

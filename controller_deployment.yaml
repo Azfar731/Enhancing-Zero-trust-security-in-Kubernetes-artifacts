@@ -1,0 +1,27 @@
+# Deploys the custom deny-automation controller with required RBAC, environment variables, and runtime configuration.
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: deny-automation-controller
+  namespace: otterize-automation
+  labels:
+    app: deny-automation
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: deny-automation
+  template:
+    metadata:
+      labels:
+        app: deny-automation
+    spec:
+      serviceAccountName: deny-automation-controller # must match your rbac.yaml
+      containers:
+        - name: controller
+          image: deny-auto:local # replace if needed
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: NAMESPACE_TO_WATCH
+              value: "otterize-auto" # adjust if different

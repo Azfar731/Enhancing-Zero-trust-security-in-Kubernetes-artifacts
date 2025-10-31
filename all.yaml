@@ -1,0 +1,101 @@
+# Defines Kubernetes workloads (client, client-other, server) and a service for the automated port-denial Zero-Trust experiment.
+
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: otterize-auto
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: client
+  namespace: otterize-auto
+spec:
+  selector:
+    matchLabels:
+      app: client
+  template:
+    metadata:
+      labels:
+        app: client
+    spec:
+      containers:
+        - name: client
+          image: alpine/curl
+          command: ["/bin/sh", "-c", "--"]
+          args:
+            [
+              'while true; do echo "Calling server..."; if ! timeout 2 curl -si server 2>/dev/null; then echo "curl timed out"; fi; sleep 2; done',
+            ]
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: client-other
+  namespace: otterize-auto
+spec:
+  selector:
+    matchLabels:
+      app: client-other
+  template:
+    metadata:
+      labels:
+        app: client-other
+    spec:
+      containers:
+        - name: client-other
+          image: alpine/curl
+          command: ["/bin/sh", "-c", "--"]
+          args:
+            [
+              'while true; do echo "Calling server..."; if ! timeout 2 curl -si server 2>/dev/null; then echo "curl timed out"; fi; sleep 2; done',
+            ]
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: server
+  namespace: otterize-auto
+spec:
+  selector:
+    matchLabels:
+      app: server
+  template:
+    metadata:
+      labels:
+        app: server
+    spec:
+      containers:
+        - name: server
+          image: node:19
+          command: ["/bin/sh", "-c"]
+          args:
+            [
+              'echo "Hi, I am the server, you called, may I help you?" > index.html; npx --yes http-server -p 80 -a 0.0.0.0 & npx --yes http-server -p 8080 -a 0.0.0.0',
+            ]
+          ports:
+            - containerPort: 80
+              protocol: TCP
+              name: http
+            - containerPort: 8080
+              protocol: TCP
+              name: http-alt
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: server
+  namespace: otterize-auto
+spec:
+  selector:
+    app: server
+  ports:
+    - name: http
+      protocol: TCP
+      port: 80
+      targetPort: http # matches containerPort name
+    - name: http-alt
+      protocol: TCP
+      port: 8080
+      targetPort: http-alt # matches containerPort name
