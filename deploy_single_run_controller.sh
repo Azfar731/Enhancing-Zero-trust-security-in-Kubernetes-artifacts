@@ -1,6 +1,7 @@
 # Bash script for running Single Run version of the Controller
 # Needs to be in the same directory as the files, or update the file paths 
 
+#!/usr/bin/env bash
 set -euo pipefail
 
 IMAGE_TAG="deny-auto:local"

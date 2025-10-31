@@ -1,3 +1,5 @@
+# Defines a Kubernetes Job that runs the deny-automation controller once to perform a single port-denial operation.
+
 apiVersion: batch/v1
 kind: Job
 metadata:

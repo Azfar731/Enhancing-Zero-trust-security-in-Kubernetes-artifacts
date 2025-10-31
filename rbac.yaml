@@ -1,3 +1,4 @@
+# Configures namespaces, ServiceAccount, Role, and RoleBinding for granting the deny-automation controller required permissions.
 
 apiVersion: v1
 kind: ServiceAccount
