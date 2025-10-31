@@ -116,10 +116,13 @@ Use the provided wrapper script:
 
 ```bash
 # 1) Ensure baseline + RBAC are applied (see above)
-# 2) Run the helper
-bash deploy_continuous_watch_controller.sh
 
-# 3) Apply or update the ClientIntent at any time:
+# 2) Assign Execute permission for the script
+chmod +x deploy_continuous_watch_controller.sh
+# 3) Run the helper
+./deploy_continuous_watch_controller.sh
+
+# 4) Apply or update the ClientIntent at any time:
 kubectl apply -f clientintent.yaml
 ```
 
